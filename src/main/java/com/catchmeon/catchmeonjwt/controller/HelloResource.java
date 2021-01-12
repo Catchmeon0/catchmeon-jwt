@@ -1,4 +1,4 @@
-package com.catchmeon.catchmeonjwt;
+package com.catchmeon.catchmeonjwt.controller;
 
 
 import com.catchmeon.catchmeonjwt.models.AuthenticationRequest;
