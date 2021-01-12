@@ -10,7 +10,6 @@ public class UserCMO {
     String lastName;
     String username;
     String password;
-
     String email;
 
 

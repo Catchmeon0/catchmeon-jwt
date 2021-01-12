@@ -3,9 +3,7 @@ package com.catchmeon.catchmeonjwt.services;
 
 import com.catchmeon.catchmeonjwt.models.UserCMO;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -62,8 +60,35 @@ class UserServiceImpl implements UserDetailsService, UserService{
     }
 
     @Override
-    public UserCMO createUser(UserCMO userCMO) {
-        return null;
+    public UserCMO createUser(UserCMO userCMO) throws ExecutionException, InterruptedException {
+
+        Firestore db = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> future = db.collection("user").document(userCMO.getEmail()).set(userCMO);
+
+        DocumentReference docRef = db.collection("user").document(userCMO.getEmail());
+        // asynchronously retrieve the document
+        ApiFuture<DocumentSnapshot> fe = docRef.get();
+        // block on response
+        DocumentSnapshot document = null;
+        try {
+            document = fe.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        UserCMO user = null;
+        if (    document.exists()) {
+            // convert document to POJO
+            user = document.toObject(UserCMO.class);
+            System.out.println(userCMO);
+            return user;
+        } else {
+            System.out.println("User not found");
+            return null;
+        }
+
+
     }
 
     @Override

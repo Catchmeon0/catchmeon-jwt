@@ -5,6 +5,8 @@ import com.catchmeon.catchmeonjwt.models.AuthenticationRequest;
 import com.catchmeon.catchmeonjwt.models.AuthenticationResponse;
 import com.catchmeon.catchmeonjwt.models.UserCMO;
 
+import com.catchmeon.catchmeonjwt.models.reponse.SignUpResponse;
+import com.catchmeon.catchmeonjwt.models.request.SignUpRequest;
 import com.catchmeon.catchmeonjwt.services.UserService;
 import com.catchmeon.catchmeonjwt.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HelloResource {
@@ -26,14 +25,11 @@ public class HelloResource {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
     @Autowired
     private JwtUtil jwtTokenUtil;
 
     @Autowired
     private UserService userService;
-
-
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String hello() {
@@ -51,21 +47,18 @@ public class HelloResource {
         } catch (BadCredentialsException e) {
             throw new Exception(" Incorrect username or password");
         }
-
-
-
-
         final UserCMO userCMO =userService.getUser(authenticationRequest.getUsername());
-
         final String jwt = jwtTokenUtil.generateToken(userCMO);
-
-
-
         return ResponseEntity.ok(new AuthenticationResponse(jwt, userCMO));
-
     }
 
 
+    @PostMapping ("/signup")
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest newUser) throws Exception{
+        UserCMO user= new UserCMO(newUser.getUsername(),newUser.getPassword(),newUser.getEmail());
+         user = this.userService.createUser(user);
+        return ResponseEntity.ok(new SignUpResponse(user.getId(),user.getUsername()));
+    }
 
 
 }
