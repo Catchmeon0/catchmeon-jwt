@@ -21,7 +21,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Firestore db = FirestoreClient.getFirestore();
-        DocumentReference docRef = db.collection("users").document(userName);
+        DocumentReference docRef = db.collection("user").document(userName);
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response

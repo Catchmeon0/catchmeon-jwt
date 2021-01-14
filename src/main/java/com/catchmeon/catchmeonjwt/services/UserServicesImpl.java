@@ -58,9 +58,8 @@ class UserServiceImpl implements UserDetailsService, UserService{
     public UserCMO getUserbyId(String name) {
         return null;
     }
-
     @Override
-    public UserCMO createUser(UserCMO userCMO) throws ExecutionException, InterruptedException {
+    public UserCMO  createUser(UserCMO userCMO) throws ExecutionException, InterruptedException {
 
         Firestore db = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> future = db.collection("user").document(userCMO.getEmail()).set(userCMO);

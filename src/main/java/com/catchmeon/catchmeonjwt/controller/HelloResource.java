@@ -37,7 +37,7 @@ public class HelloResource {
     }
 
 
-
+    @CrossOrigin("*")
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
@@ -52,7 +52,7 @@ public class HelloResource {
         return ResponseEntity.ok(new AuthenticationResponse(jwt, userCMO));
     }
 
-
+    @CrossOrigin("*")
     @PostMapping ("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest newUser) throws Exception{
         UserCMO user= new UserCMO(newUser.getUsername(),newUser.getPassword(),newUser.getEmail());
