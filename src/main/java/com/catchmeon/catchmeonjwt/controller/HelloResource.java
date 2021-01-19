@@ -1,8 +1,8 @@
 package com.catchmeon.catchmeonjwt.controller;
 
 
-import com.catchmeon.catchmeonjwt.models.AuthenticationRequest;
-import com.catchmeon.catchmeonjwt.models.AuthenticationResponse;
+import com.catchmeon.catchmeonjwt.models.request.AuthenticationRequest;
+import com.catchmeon.catchmeonjwt.models.reponse.AuthenticationResponse;
 import com.catchmeon.catchmeonjwt.models.UserCMO;
 
 import com.catchmeon.catchmeonjwt.models.reponse.SignUpResponse;
@@ -57,7 +57,7 @@ public class HelloResource {
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest newUser) throws Exception{
         UserCMO user= new UserCMO(newUser.getUsername(),newUser.getPassword(),newUser.getEmail());
          user = this.userService.createUser(user);
-        return ResponseEntity.ok(new SignUpResponse(user.getId(),user.getUsername()));
+        return ResponseEntity.ok(new SignUpResponse(user.getUsername()));
     }
 
 

@@ -1,6 +1,7 @@
 package com.catchmeon.catchmeonjwt.models;
 
 
+import java.util.HashMap;
 
 public class UserCMO {
 
@@ -13,12 +14,15 @@ public class UserCMO {
     String email;
 
 
+    HashMap<String, String> userIds;
+
 
     public UserCMO() {
     }
 
 
     public UserCMO(String username, String password, String email) {
+        this.userIds = new HashMap<String,String>();
         this.id = "";
         this.firstName = "";
         this.lastName = "";
@@ -73,5 +77,13 @@ public class UserCMO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public HashMap getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(HashMap<String,String> userIds) {
+        this.userIds = userIds;
     }
 }

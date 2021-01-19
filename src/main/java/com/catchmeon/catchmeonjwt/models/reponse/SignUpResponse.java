@@ -6,10 +6,10 @@ import java.io.Serializable;
 public class SignUpResponse implements Serializable {
 
     private final String username;
-    private final String  id;
 
-    public SignUpResponse(String  id, String username) {
-        this.id = id;
+
+    public SignUpResponse( String username) {
+
         this.username = username;
 
     }
@@ -18,7 +18,5 @@ public class SignUpResponse implements Serializable {
         return username;
     }
 
-    public String getId() {
-        return id;
-    }
+
 }

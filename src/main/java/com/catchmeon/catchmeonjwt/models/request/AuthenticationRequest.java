@@ -1,4 +1,4 @@
-package com.catchmeon.catchmeonjwt.models;
+package com.catchmeon.catchmeonjwt.models.request;
 
 public class AuthenticationRequest {
     private String username;

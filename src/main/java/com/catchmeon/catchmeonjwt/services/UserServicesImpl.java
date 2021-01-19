@@ -58,13 +58,16 @@ class UserServiceImpl implements UserDetailsService, UserService{
     public UserCMO getUserbyId(String name) {
         return null;
     }
+
     @Override
     public UserCMO  createUser(UserCMO userCMO) throws ExecutionException, InterruptedException {
 
-        Firestore db = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> future = db.collection("user").document(userCMO.getEmail()).set(userCMO);
 
-        DocumentReference docRef = db.collection("user").document(userCMO.getEmail());
+
+        Firestore db = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> future = db.collection("user").document(userCMO.getUsername()).set(userCMO);
+
+        DocumentReference docRef = db.collection("user").document(userCMO.getUsername());
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> fe = docRef.get();
         // block on response
@@ -102,4 +105,6 @@ class UserServiceImpl implements UserDetailsService, UserService{
     public void deleteUser(String name) {
 
     }
+
+
 }
