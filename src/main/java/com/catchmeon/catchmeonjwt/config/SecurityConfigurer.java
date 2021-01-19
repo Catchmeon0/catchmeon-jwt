@@ -1,12 +1,14 @@
-package com.catchmeon.catchmeonjwt;
+package com.catchmeon.catchmeonjwt.config;
 
 import com.catchmeon.catchmeonjwt.filters.JwtRequestFilter;
 import com.catchmeon.catchmeonjwt.services.MyUserDetailsService;
+import com.google.cloud.storage.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -30,13 +32,18 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/authenticate").permitAll()
+                .authorizeRequests().antMatchers("/authenticate","/info","/signup").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(String.valueOf(HttpMethod.GET),"/info")
+                .antMatchers(String.valueOf(HttpMethod.POST), "/authenticate");
+    }
 
     @Bean
     @Override
