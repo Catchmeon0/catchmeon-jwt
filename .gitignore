@@ -32,3 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 catchmeon-4e321-firebase-adminsdk-13mhg-077f355881.json
+
+src/main/java/com/catchmeon/catchmeonjwt/util/key.java

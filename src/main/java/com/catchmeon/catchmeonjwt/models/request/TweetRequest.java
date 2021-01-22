@@ -1,5 +1,6 @@
 package com.catchmeon.catchmeonjwt.models.request;
 
+
 import com.catchmeon.catchmeonjwt.models.UserCMO;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static com.catchmeon.catchmeonjwt.util.key.authKey;
 
 public class TweetRequest {
     public List<String> ListFollowedUserfromUserID;
@@ -69,7 +72,8 @@ public class TweetRequest {
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
         get.setHeader("Content-Type", "application/json");
-        get.setHeader("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAABhkLwEAAAAATX2kSV9bdfUDzPOSx9SaqwR8l78%3DuyiHlz9DclvL2VRhKgMaW1n8xdpGeUXpoe5QHdff4ckPC0cdDT");
+
+        get.setHeader("Authorization", authKey);
 
 //this is response:
         HttpResponse response = client.execute(get);
