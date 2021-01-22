@@ -7,15 +7,19 @@ import com.catchmeon.catchmeonjwt.models.UserCMO;
 
 import com.catchmeon.catchmeonjwt.models.reponse.SignUpResponse;
 import com.catchmeon.catchmeonjwt.models.request.SignUpRequest;
+import com.catchmeon.catchmeonjwt.models.request.TweetRequest;
+import com.catchmeon.catchmeonjwt.models.twetterModel;
 import com.catchmeon.catchmeonjwt.services.UserService;
 import com.catchmeon.catchmeonjwt.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 public class HelloResource {
@@ -60,5 +64,20 @@ public class HelloResource {
         return ResponseEntity.ok(new SignUpResponse(user.getUsername()));
     }
 
+
+
+    @RequestMapping (value = "/getTweetFromUser" /*,produces = MediaType.APPLICATION_JSON_VALUE*/)
+    @ResponseBody
+    @CrossOrigin("*")
+    public ResponseEntity<?> getTweet(@RequestParam  (required = false) String  userTwetterId) throws Exception{
+        twetterModel tweet = new twetterModel();
+        // String res = new TweetRequest(userTwetterId).getJsonData(userTwetterId);
+        String tweetRequestList = new TweetRequest(userTwetterId).listStatusJsonResponse();
+
+
+        return new ResponseEntity<>(
+                tweetRequestList,
+                HttpStatus.OK);
+    }
 
 }
