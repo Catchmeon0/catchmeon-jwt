@@ -2,6 +2,7 @@ package com.catchmeon.catchmeonjwt.services;
 
 
 import com.catchmeon.catchmeonjwt.models.UserCMO;
+import com.catchmeon.catchmeonjwt.models.user_model;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -29,8 +32,26 @@ class UserServiceImpl implements UserDetailsService, UserService{
 
     @Override
     public UserCMO getUser(String username) {
+
         Firestore db = FirestoreClient.getFirestore();
-        DocumentReference docRef = db.collection("user").document(username);
+
+        // Create a reference to the users collection
+        CollectionReference _users = db.collection("user");
+        // Create a query against the collection.
+        Query query = _users.whereEqualTo("username", username);
+        // retrieve  query results asynchronously using query.get()
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        DocumentSnapshot userDocument = null;
+        try {
+            userDocument = querySnapshot.get().getDocuments().get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        String usertId = userDocument.getId();
+
+        DocumentReference docRef = db.collection("user").document(usertId);
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
@@ -46,6 +67,7 @@ class UserServiceImpl implements UserDetailsService, UserService{
         if (    document.exists()) {
             // convert document to POJO
             userCMO = document.toObject(UserCMO.class);
+            userCMO.setId(usertId);
             System.out.println(userCMO);
             return userCMO;
         } else {
@@ -65,9 +87,37 @@ class UserServiceImpl implements UserDetailsService, UserService{
 
 
         Firestore db = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> future = db.collection("user").document(userCMO.getUsername()).set(userCMO);
+        CollectionReference _user = db.collection("user");
+        List<ApiFuture<WriteResult>> future = new ArrayList<>();
+        future.add(
+                _user
+                        .document()
+                        .set(userCMO)
+        );
 
-        DocumentReference docRef = db.collection("user").document(userCMO.getUsername());
+       // ApiFuture<WriteResult> future = db.collection("user").document().add(userCMO);
+
+        // Create a reference to the users collection
+        CollectionReference _users = db.collection("user");
+        // Create a query against the collection.
+        Query query = _users.whereEqualTo("username", userCMO.getUsername());
+        // retrieve  query results asynchronously using query.get()
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        DocumentSnapshot userDocument = querySnapshot.get().getDocuments().get(0);
+        String usertId = userDocument.getId();
+
+        CollectionReference users = db.collection("users");
+        List<ApiFuture<WriteResult>> future2 = new ArrayList<>();
+        future2.add(
+                users
+                        .document(usertId)
+                .set(
+                        new user_model(userCMO.getUsername(), userCMO.getPassword(), userCMO.getEmail(), userCMO.getUsername(), usertId) )
+                );
+
+
+
+        DocumentReference docRef = db.collection("user").document(usertId);
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> fe = docRef.get();
         // block on response

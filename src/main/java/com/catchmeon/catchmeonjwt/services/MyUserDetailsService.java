@@ -1,9 +1,7 @@
 package com.catchmeon.catchmeonjwt.services;
 import com.catchmeon.catchmeonjwt.models.UserCMO;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +19,24 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Firestore db = FirestoreClient.getFirestore();
-        DocumentReference docRef = db.collection("user").document(userName);
+
+        // Create a reference to the users collection
+        CollectionReference _users = db.collection("user");
+        // Create a query against the collection.
+        Query query = _users.whereEqualTo("username", userName);
+        // retrieve  query results asynchronously using query.get()
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        DocumentSnapshot userDocument = null;
+        try {
+            userDocument = querySnapshot.get().getDocuments().get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        String usertId = userDocument.getId();
+
+        DocumentReference docRef = db.collection("user").document(usertId);
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
@@ -33,18 +48,17 @@ public class MyUserDetailsService implements UserDetailsService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        UserCMO usercmo = null;
-        if (document.exists()) {
+        UserCMO userCMO = null;
+        if (    document.exists()) {
             // convert document to POJO
-            usercmo = document.toObject(UserCMO.class);
-            System.out.println(usercmo);
-
+            userCMO = document.toObject(UserCMO.class);
+            System.out.println(userCMO);
         } else {
-            System.out.println("No such document!");
+            System.out.println("User not found");
             return null;
         }
-        String username=  usercmo.getUsername();
-        String password=  usercmo.getPassword();
+        String username=  userCMO.getUsername();
+        String password=  userCMO.getPassword();
 
 
 
