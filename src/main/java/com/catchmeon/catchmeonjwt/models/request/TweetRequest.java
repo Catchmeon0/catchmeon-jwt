@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.catchmeon.catchmeonjwt.util.key.authKey;
+import static com.catchmeon.catchmeonjwt.util.key.authKeyTwitter;
 
 public class TweetRequest {
     public List<String> ListFollowedUserfromUserID;
@@ -73,7 +73,7 @@ public class TweetRequest {
         HttpGet get = new HttpGet(url);
         get.setHeader("Content-Type", "application/json");
 
-        get.setHeader("Authorization", authKey);
+        get.setHeader("Authorization", authKeyTwitter);
 
 //this is response:
         HttpResponse response = client.execute(get);
@@ -123,7 +123,7 @@ public class TweetRequest {
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
         get.setHeader("Content-Type", "application/json");
-        get.setHeader("Authorization", authKey);
+        get.setHeader("Authorization", authKeyTwitter);
 
 //this is response:
         HttpResponse response = client.execute(get);
