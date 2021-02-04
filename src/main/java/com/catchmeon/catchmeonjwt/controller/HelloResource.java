@@ -80,4 +80,19 @@ public class HelloResource {
                 HttpStatus.OK);
     }
 
+
+    @RequestMapping (value = "/getOwnTweetFromUser" /*,produces = MediaType.APPLICATION_JSON_VALUE*/)
+    @ResponseBody
+    @CrossOrigin("*")
+    public ResponseEntity<?> getOwnTweet(@RequestParam  (required = false) String  UserScreenName) throws Exception{
+        twetterModel tweet = new twetterModel();
+        String res = new TweetRequest(UserScreenName).getUserStatusFromUserScreenName(UserScreenName);
+
+
+
+        return new ResponseEntity<>(
+                res,
+                HttpStatus.OK);
+    }
+
 }

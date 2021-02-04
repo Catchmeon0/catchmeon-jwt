@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -83,8 +84,10 @@ class UserServiceImpl implements UserDetailsService, UserService{
 
     @Override
     public UserCMO  createUser(UserCMO userCMO) throws ExecutionException, InterruptedException {
-
-
+        HashMap<String, String> _userIds =userCMO.getUserIds();
+        _userIds.put("twitter","");
+        _userIds.put("youtube","");
+        userCMO.setUserIds(_userIds);
 
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference _user = db.collection("user");
@@ -96,7 +99,6 @@ class UserServiceImpl implements UserDetailsService, UserService{
         );
 
        // ApiFuture<WriteResult> future = db.collection("user").document().add(userCMO);
-
         // Create a reference to the users collection
         CollectionReference _users = db.collection("user");
         // Create a query against the collection.
@@ -114,9 +116,6 @@ class UserServiceImpl implements UserDetailsService, UserService{
                 .set(
                         new user_model(userCMO.getUsername(), userCMO.getPassword(), userCMO.getEmail(), userCMO.getUsername(), usertId) )
                 );
-
-
-
         DocumentReference docRef = db.collection("user").document(usertId);
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> fe = docRef.get();

@@ -179,4 +179,12 @@ public class TweetRequest {
 
         return response;
     }
+
+
+    public String getUserStatusFromUserScreenName(String userScreenName) throws Exception {
+
+        String jsonResponse;
+        jsonResponse = getJsonData( getTwitterStatusFromUserScreenName(userScreenName));
+        return  jsonResponse;
+    }
 }
