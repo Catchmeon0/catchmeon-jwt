@@ -5,6 +5,9 @@ import com.catchmeon.catchmeonjwt.models.UserCMO;
 import com.catchmeon.catchmeonjwt.models.user_model;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -88,26 +91,29 @@ class UserServiceImpl implements UserDetailsService, UserService{
         _userIds.put("twitter","");
         _userIds.put("youtube","");
         userCMO.setUserIds(_userIds);
-
         Firestore db = FirestoreClient.getFirestore();
+        FirebaseAuth mAuth;
+
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                .setEmail(userCMO.getEmail())
+                .setEmailVerified(false)
+                .setPassword(userCMO.getPassword())
+                .setDisabled(false);
+
+        UserRecord userRecord = null;
+        mAuth = FirebaseAuth.getInstance();
+        try {
+            userRecord= mAuth.createUser(request);
+        } catch (FirebaseAuthException e) {
+            e.printStackTrace();
+        }
+
+
         CollectionReference _user = db.collection("user");
         List<ApiFuture<WriteResult>> future = new ArrayList<>();
-        future.add(
-                _user
-                        .document()
-                        .set(userCMO)
-        );
+        future.add(_user.document(userRecord.getUid()).set(userCMO));
 
-       // ApiFuture<WriteResult> future = db.collection("user").document().add(userCMO);
-        // Create a reference to the users collection
-        CollectionReference _users = db.collection("user");
-        // Create a query against the collection.
-        Query query = _users.whereEqualTo("username", userCMO.getUsername());
-        // retrieve  query results asynchronously using query.get()
-        ApiFuture<QuerySnapshot> querySnapshot = query.get();
-        DocumentSnapshot userDocument = querySnapshot.get().getDocuments().get(0);
-        String usertId = userDocument.getId();
-
+        String usertId = userRecord.getUid();
         CollectionReference users = db.collection("users");
         List<ApiFuture<WriteResult>> future2 = new ArrayList<>();
         future2.add(
