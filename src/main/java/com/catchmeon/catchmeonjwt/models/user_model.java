@@ -10,7 +10,25 @@ public class user_model {
     String username;
     String password;
     String email;
+    String userTwitter;
+    String userYoutube;
     String profileImageUrl;
+
+    public String getUserTwitter() {
+        return userTwitter;
+    }
+
+    public void setUserTwitter(String userTwitter) {
+        this.userTwitter = userTwitter;
+    }
+
+    public String getUserYoutube() {
+        return userYoutube;
+    }
+
+    public void setUserYoutube(String userYoutube) {
+        this.userYoutube = userYoutube;
+    }
 
     public String getId() {
         return id;
@@ -67,7 +85,8 @@ public class user_model {
         this.email = email;
         this.profileImageUrl ="";
         this.name = name;
-
+        this.userTwitter="";
+        this.userYoutube="";
     }
 
 
