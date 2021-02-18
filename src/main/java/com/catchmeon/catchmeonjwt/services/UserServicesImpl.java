@@ -47,12 +47,16 @@ class UserServiceImpl implements UserDetailsService, UserService{
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
         DocumentSnapshot userDocument = null;
         try {
+            if (querySnapshot.get().getDocuments().size()>=1)
             userDocument = querySnapshot.get().getDocuments().get(0);
+            else
+                userDocument = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        if (userDocument == null ) return null;
         String usertId = userDocument.getId();
 
         DocumentReference docRef = db.collection("user").document(usertId);

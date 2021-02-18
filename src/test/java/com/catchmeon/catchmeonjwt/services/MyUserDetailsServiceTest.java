@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 
@@ -37,4 +38,17 @@ public class MyUserDetailsServiceTest {
         assertEquals(user.getUsername(), userCMO.getUsername());
 
     }
+
+    @Test
+    public  void whenUserNotFound_getUser(){
+
+        var userCMO  =new UserCMO();
+
+        userCMO = userService.getUser("UsernameNoInDataBase");
+
+        assertEquals(userCMO, null);
+
+    }
+
+
 }
